@@ -1,0 +1,79 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 700,
+	"windowMinHeight": 500,
+	"windowMaxWidth": 1200,
+	"windowMaxHeight": 900,
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"events": [
+		"onLoad"
+	],
+	"windowTitle": "Edit Extracted Data - JSON Format",
+	"destination": "detailScreen",
+	"pages": [
+		null,
+		{
+			"objects": {
+				"lblInstruction": {
+					"type": "text",
+					"left": 20,
+					"top": 20,
+					"width": 660,
+					"height": 30,
+					"name": "lblInstruction",
+					"text": "Edit the extracted data below. The data must be valid JSON format.",
+					"fontSize": 12,
+					"fontStyle": "bold"
+				},
+				"jsonEditor": {
+					"type": "input",
+					"left": 20,
+					"top": 60,
+					"width": 660,
+					"height": 360,
+					"name": "jsonEditor",
+					"dataSource": "Form:C1466.editedJSON",
+					"multiline": true,
+					"scrollbarVertical": "automatic",
+					"enterable": true,
+					"fontFamily": "Monaco",
+					"fontSize": 11
+				},
+				"btnSave": {
+					"type": "button",
+					"left": 480,
+					"top": 440,
+					"width": 100,
+					"height": 30,
+					"name": "btnSave",
+					"text": "Save",
+					"defaultButton": true,
+					"method": "ObjectMethods/btnSave.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"btnCancel": {
+					"type": "button",
+					"left": 590,
+					"top": 440,
+					"width": 100,
+					"height": 30,
+					"name": "btnCancel",
+					"text": "Cancel",
+					"method": "ObjectMethods/btnCancel.4dm",
+					"events": [
+						"onClick"
+					]
+				}
+			}
+		}
+	],
+	"method": "method.4dm"
+}

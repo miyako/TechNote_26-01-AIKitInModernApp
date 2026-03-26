@@ -1,0 +1,1 @@
+{"provider":"OpenAI","apiKey":"","baseURL":"","models":{"default":"gpt-4o-mini","vision":"gpt-4o"},"generation":{"maxTokens":2500,"temperature":0.3}}

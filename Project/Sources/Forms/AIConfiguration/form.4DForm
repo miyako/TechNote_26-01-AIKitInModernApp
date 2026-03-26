@@ -1,0 +1,362 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 0,
+	"windowMinHeight": 0,
+	"windowMaxWidth": 32767,
+	"windowMaxHeight": 32767,
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"events": [
+		"onLoad",
+		"onPageChange",
+		"onValidate",
+		"onClick",
+		"onDoubleClick",
+		"onOutsideCall",
+		"onBeginDragOver",
+		"onDragOver",
+		"onDrop",
+		"onAfterKeystroke",
+		"onMenuSelect",
+		"onPluginArea",
+		"onAfterEdit",
+		"onTimer",
+		"onBoundVariableChange"
+	],
+	"windowTitle": "window title",
+	"destination": "detailScreen",
+	"pages": [
+		{
+			"objects": {}
+		},
+		{
+			"objects": {
+				"object4": {
+					"type": "rectangle",
+					"top": 134,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"object5": {
+					"type": "rectangle",
+					"top": 169,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"object1": {
+					"type": "rectangle",
+					"top": 30,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#c0c0c0"
+				},
+				"object2": {
+					"type": "rectangle",
+					"top": 65,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"object3": {
+					"type": "rectangle",
+					"top": 100,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"Text": {
+					"type": "text",
+					"top": 38,
+					"left": 111,
+					"width": 80,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Provider*:"
+				},
+				"Text1": {
+					"type": "text",
+					"top": 73,
+					"left": 111,
+					"width": 80,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "API Key*:"
+				},
+				"Text2": {
+					"type": "text",
+					"top": 107,
+					"left": 111,
+					"width": 80,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Base URL: "
+				},
+				"provider": {
+					"type": "input",
+					"top": 38,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.provider",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "AI Provider (eg. OpenAI, etc.)",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/provider.4dm"
+				},
+				"apiKey": {
+					"type": "input",
+					"top": 73,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.apiKey",
+					"dataSourceTypeHint": "text",
+					"class": "default",
+					"textAlign": "left",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"contextMenu": "none",
+					"placeholder": "e.g . sk-proj-xxx",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/apiKey.4dm"
+				},
+				"baseURL": {
+					"type": "input",
+					"top": 108,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.baseURL",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "eg. http://127.0.0.1:11434/v1",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/baseURL.4dm"
+				},
+				"defaultModel": {
+					"type": "input",
+					"top": 142,
+					"left": 199,
+					"width": 211,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.defaultModel",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "eg. gpt-4o-mini",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/defaultModel.4dm"
+				},
+				"visionModel": {
+					"type": "input",
+					"top": 177,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.visionModel",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "eg. gpt-4o",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/visionModel.4dm"
+				},
+				"Button": {
+					"type": "button",
+					"top": 288,
+					"left": 261,
+					"width": 100,
+					"height": 30,
+					"text": "Save",
+					"focusable": false,
+					"method": "ObjectMethods/Button.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"Button1": {
+					"type": "button",
+					"top": 288,
+					"left": 375,
+					"width": 100,
+					"height": 30,
+					"action": "cancel",
+					"text": "Cancel",
+					"focusable": false,
+					"events": [
+						"onClick"
+					],
+					"method": "ObjectMethods/Button1.4dm"
+				},
+				"Text3": {
+					"type": "text",
+					"top": 142,
+					"left": 111,
+					"width": 80,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Default Model:"
+				},
+				"Text4": {
+					"type": "text",
+					"top": 176,
+					"left": 71,
+					"width": 120,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Vision Model:"
+				},
+				"object6": {
+					"type": "rectangle",
+					"top": 204,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"maxTokens": {
+					"type": "input",
+					"top": 212,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.maxTokens",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "eg. 1000",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/maxTokens.4dm"
+				},
+				"Text5": {
+					"type": "text",
+					"top": 211,
+					"left": 71,
+					"width": 120,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Max Tokens:"
+				},
+				"object7": {
+					"type": "rectangle",
+					"top": 239,
+					"left": 194,
+					"width": 282,
+					"height": 30,
+					"sizingX": "grow",
+					"stroke": "#C0C0C0"
+				},
+				"temperature": {
+					"type": "input",
+					"top": 247,
+					"left": 199,
+					"width": 271,
+					"height": 17,
+					"sizingX": "grow",
+					"dataSource": "Form:C1466.temperature",
+					"class": "default",
+					"fill": "transparent",
+					"borderStyle": "none",
+					"hideFocusRing": true,
+					"placeholder": "eg. 0.3",
+					"dragging": "none",
+					"dropping": "custom",
+					"events": [
+						"onGettingFocus"
+					],
+					"method": "ObjectMethods/temperature.4dm"
+				},
+				"Text6": {
+					"type": "text",
+					"top": 246,
+					"left": 71,
+					"width": 120,
+					"height": 21,
+					"class": "default",
+					"textAlign": "right",
+					"text": "Temperature:"
+				},
+				"Text7": {
+					"type": "text",
+					"text": "* : Mandatory field",
+					"top": 9,
+					"left": 377,
+					"width": 103,
+					"height": 15
+				}
+			}
+		}
+	],
+	"geometryStamp": 134,
+	"method": "method.4dm",
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	}
+}

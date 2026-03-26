@@ -1,0 +1,436 @@
+{
+	"$4d": {
+		"version": "1",
+		"kind": "form"
+	},
+	"windowSizingX": "variable",
+	"windowSizingY": "variable",
+	"windowMinWidth": 1200,
+	"windowMinHeight": 850,
+	"windowMaxWidth": 32000,
+	"windowMaxHeight": 32000,
+	"rightMargin": 20,
+	"bottomMargin": 20,
+	"events": [
+		"onLoad",
+		"onValidate",
+		"onClick",
+		"onDoubleClick",
+		"onGettingFocus",
+		"onUnload",
+		"onTimer"
+	],
+	"windowTitle": "Document Manager",
+	"destination": "detailScreen",
+	"menuBar": "Barre #1",
+	"pages": [
+		{
+			"objects": {
+				"formTitle": {
+					"type": "text",
+					"left": 458,
+					"top": 6,
+					"width": 500,
+					"height": 25,
+					"name": "formTitle",
+					"text": "AI Document Manager",
+					"fontSize": 18,
+					"fontStyle": "bold",
+					"textAlign": "left",
+					"strokeColor": "#2563EB"
+				},
+				"listDocuments": {
+					"type": "listbox",
+					"left": 20,
+					"top": 110,
+					"width": 400,
+					"height": 696,
+					"name": "listDocuments",
+					"dataSource": "Form.documents",
+					"listboxType": "collection",
+					"method": "ObjectMethods/listDocuments.4dm",
+					"events": [
+						"onDoubleClick",
+						"onDataChange",
+						"onSelectionChange"
+					],
+					"currentItemSource": "Form:C1466.selectedDoc",
+					"fill": "automatic",
+					"horizontalPadding": 3,
+					"verticalPadding": 3,
+					"rowHeight": "1em",
+					"alternateFill": "#b1c4dd",
+					"borderStyle": "system",
+					"hideExtraBlankRows": false,
+					"hideSystemHighlight": false,
+					"hideFocusRing": false,
+					"scrollbarVertical": "automatic",
+					"scrollbarHorizontal": "hidden",
+					"headerHeight": "2em",
+					"horizontalLineStroke": "transparent",
+					"verticalLineStroke": "transparent",
+					"columns": [
+						{
+							"name": "fileName",
+							"width": 170,
+							"header": {
+								"name": "Entête1",
+								"title": "File Name",
+								"text": "File Name"
+							},
+							"footer": {
+								"name": "Pied1"
+							},
+							"dataSource": "This:C1470.fileName",
+							"enterable": false
+						},
+						{
+							"name": "documentType",
+							"width": 80,
+							"header": {
+								"name": "Entête2",
+								"title": "Type",
+								"text": "Type"
+							},
+							"footer": {
+								"name": "Pied2"
+							},
+							"dataSource": "This:C1470.documentType",
+							"enterable": false
+						},
+						{
+							"name": "uploadDate",
+							"width": 82,
+							"header": {
+								"name": "Entête3",
+								"title": "Upload Date",
+								"text": "Upload Date"
+							},
+							"footer": {
+								"name": "Pied3"
+							},
+							"method": "",
+							"dataSource": "This:C1470.uploadDate",
+							"enterable": false
+						},
+						{
+							"name": "status",
+							"width": 70,
+							"header": {
+								"name": "Entête4",
+								"title": "Status",
+								"text": "Status"
+							},
+							"footer": {
+								"name": "Pied4"
+							},
+							"dataSource": "This:C1470.status",
+							"enterable": false
+						}
+					]
+				},
+				"btnUpload": {
+					"type": "button",
+					"left": 20,
+					"top": 50,
+					"width": 120,
+					"height": 20,
+					"name": "btnUpload",
+					"text": "Upload Document",
+					"method": "ObjectMethods/btnUpload.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"lblDocuments": {
+					"type": "text",
+					"left": 20,
+					"top": 90,
+					"width": 150,
+					"height": 15,
+					"name": "lblDocuments",
+					"text": "Documents",
+					"fontSize": 10,
+					"fontStyle": "bold"
+				},
+				"btnProcess": {
+					"type": "button",
+					"left": 150,
+					"top": 50,
+					"width": 120,
+					"height": 20,
+					"name": "btnProcess",
+					"text": "Analyze Selected",
+					"method": "ObjectMethods/btnProcess.4dm",
+					"events": [
+						"onClick",
+						"onTimer"
+					]
+				},
+				"btnDelete": {
+					"type": "button",
+					"left": 20,
+					"top": 820,
+					"width": 120,
+					"height": 20,
+					"name": "btnDelete",
+					"text": "Delete Document",
+					"method": "ObjectMethods/btnDelete.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"previewArea": {
+					"type": "webArea",
+					"left": 440,
+					"top": 110,
+					"width": 400,
+					"height": 426,
+					"name": "previewArea",
+					"method": "",
+					"dataSource": "Form:C1466.previeArea"
+				},
+				"lblPreview": {
+					"type": "text",
+					"left": 440,
+					"top": 90,
+					"width": 150,
+					"height": 15,
+					"name": "lblPreview",
+					"text": "Document Preview",
+					"fontSize": 10,
+					"fontStyle": "bold"
+				},
+				"extractedDataArea": {
+					"type": "input",
+					"left": 440,
+					"top": 582,
+					"width": 400,
+					"height": 224,
+					"name": "extractedDataArea",
+					"text": "",
+					"multiline": true,
+					"dataSource": "Form:C1466.extractedDataArea",
+					"bottom": 806
+				},
+				"lblExtractedData": {
+					"type": "text",
+					"left": 440,
+					"top": 561,
+					"width": 200,
+					"height": 15,
+					"name": "lblExtractedData",
+					"text": "Extracted Data",
+					"fontSize": 10,
+					"fontStyle": "bold"
+				},
+				"btnEditExtractedData": {
+					"type": "button",
+					"left": 802,
+					"top": 556,
+					"width": 40,
+					"height": 20,
+					"name": "btnEditExtractedData",
+					"text": "Edit",
+					"method": "ObjectMethods/btnEditExtractedData.4dm",
+					"events": [
+						"onClick"
+					]
+				},
+				"summaryText": {
+					"type": "webArea",
+					"left": 860,
+					"top": 110,
+					"width": 399,
+					"height": 316,
+					"name": "summaryText",
+					"method": "",
+					"urlSource": "Form:C1466.summaryHTML",
+					"progressSource": "Form:C1466.summaryProgress",
+					"dataSource": "Form:C1466.summaryHTML"
+				},
+				"lblSummary": {
+					"type": "text",
+					"left": 860,
+					"top": 90,
+					"width": 150,
+					"height": 15,
+					"name": "lblSummary",
+					"text": "AI Summary",
+					"fontSize": 10,
+					"fontStyle": "bold"
+				},
+				"summaryTypeDropdown": {
+					"type": "dropdown",
+					"left": 1080,
+					"top": 87,
+					"width": 100,
+					"height": 20,
+					"name": "summaryTypeDropdown",
+					"method": "ObjectMethods/summaryTypeDropdown.4dm",
+					"dataSource": "Form:C1466.summaryType",
+					"dataSourceTypeHint": "text",
+					"choiceList": [
+						"Brief",
+						"Detailed",
+						"Executive",
+						"KeyPoints"
+					],
+					"events": [
+						"onDataChange"
+					]
+				},
+				"btnGenerateSummary": {
+					"type": "button",
+					"left": 1190,
+					"top": 87,
+					"width": 70,
+					"height": 20,
+					"name": "btnGenerateSummary",
+					"text": "Generate",
+					"method": "ObjectMethods/btnGenerateSummary.4dm",
+					"events": [
+						"onClick",
+						"onTimer"
+					]
+				},
+				"lblChat": {
+					"type": "text",
+					"left": 860,
+					"top": 437,
+					"width": 200,
+					"height": 15,
+					"name": "lblChat",
+					"text": "Chat Messages",
+					"fontSize": 10,
+					"fontStyle": "bold"
+				},
+				"chatInput": {
+					"type": "input",
+					"left": 860,
+					"top": 774,
+					"width": 328,
+					"height": 32,
+					"name": "chatInput",
+					"text": "",
+					"method": "",
+					"dataSource": "Form:C1466.chatInput",
+					"bottom": 806
+				},
+				"btnSendChat": {
+					"type": "button",
+					"left": 1200,
+					"top": 774,
+					"width": 60,
+					"height": 32,
+					"name": "btnSendChat",
+					"text": "Send",
+					"method": "ObjectMethods/btnSendChat.4dm",
+					"events": [
+						"onClick",
+						"onTimer"
+					],
+					"bottom": 806
+				},
+				"chatMessages": {
+					"type": "webArea",
+					"left": 860,
+					"top": 457,
+					"width": 399,
+					"height": 305,
+					"name": "chatMessages",
+					"events": []
+				}
+			}
+		},
+		{
+			"objects": {}
+		}
+	],
+	"method": "method.4dm",
+	"css": [
+		{
+			"selector": "button",
+			"properties": {
+				"background-color": "#3B82F6",
+				"color": "white",
+				"border": "none",
+				"border-radius": "4px",
+				"padding": "8px 12px",
+				"font-size": "12px",
+				"font-weight": "500",
+				"cursor": "pointer",
+				"transition": "background-color 0.3s ease"
+			}
+		},
+		{
+			"selector": "button:hover",
+			"properties": {
+				"background-color": "#2563EB"
+			}
+		},
+		{
+			"selector": "button:active",
+			"properties": {
+				"background-color": "#1D4ED8"
+			}
+		},
+		{
+			"selector": "input[type='text'], textarea",
+			"properties": {
+				"border": "1px solid #D1D5DB",
+				"border-radius": "4px",
+				"padding": "8px 12px",
+				"font-size": "12px",
+				"font-family": "Arial, sans-serif",
+				"background-color": "#F9FAFB",
+				"transition": "border-color 0.3s ease"
+			}
+		},
+		{
+			"selector": "input[type='text']:focus, textarea:focus",
+			"properties": {
+				"border-color": "#3B82F6",
+				"outline": "none",
+				"background-color": "white",
+				"box-shadow": "0 0 0 3px rgba(59, 130, 246, 0.1)"
+			}
+		},
+		{
+			"selector": ".label-section",
+			"properties": {
+				"color": "#1F2937",
+				"font-weight": "700",
+				"font-size": "12px",
+				"text-transform": "uppercase",
+				"letter-spacing": "0.5px",
+				"margin-bottom": "8px"
+			}
+		},
+		{
+			"selector": "listbox",
+			"properties": {
+				"border": "1px solid #E5E7EB",
+				"border-radius": "4px",
+				"background-color": "white",
+				"alternating-rows": "#F9FAFB"
+			}
+		},
+		{
+			"selector": "webarea",
+			"properties": {
+				"border": "1px solid #E5E7EB",
+				"border-radius": "4px",
+				"background-color": "#FAFAFA"
+			}
+		}
+	],
+	"editor": {
+		"activeView": "View 1",
+		"defaultView": "View 1",
+		"views": {
+			"View 1": {}
+		}
+	},
+	"geometryStamp": 210
+}

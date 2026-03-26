@@ -1,0 +1,92 @@
+{
+	"tables": {
+		"Summaries": {
+			"color": {
+				"red": 114,
+				"green": 209,
+				"blue": 221,
+				"alpha": 255
+			},
+			"coordinates": {
+				"left": 719,
+				"top": 48,
+				"width": 147,
+				"height": 272.33203125
+			},
+			"displayable_fields_count": 11,
+			"fields_ordering": 1
+		},
+		"Conversation": {
+			"color": {
+				"red": 255,
+				"green": 153,
+				"blue": 63,
+				"alpha": 255
+			},
+			"coordinates": {
+				"left": 178,
+				"top": 43,
+				"width": 156,
+				"height": 341.33203125
+			},
+			"displayable_fields_count": 14
+		},
+		"ExtractedData": {
+			"color": {
+				"red": 168,
+				"green": 206,
+				"blue": 226,
+				"alpha": 255
+			},
+			"coordinates": {
+				"left": 420,
+				"top": 366,
+				"width": 195,
+				"height": 134.33203125
+			},
+			"displayable_fields_count": 4,
+			"fields_ordering": 1
+		},
+		"Document": {
+			"color": {
+				"red": 168,
+				"green": 206,
+				"blue": 226,
+				"alpha": 255
+			},
+			"coordinates": {
+				"left": 432,
+				"top": 34,
+				"width": 174,
+				"height": 287.33203125
+			},
+			"displayable_fields_count": 11
+		}
+	},
+	"relations": {
+		"DB432B5965F5504CBEAECDDDE8CE5BD0": {
+			"color": {
+				"red": 240,
+				"green": 240,
+				"blue": 240,
+				"alpha": 0
+			}
+		},
+		"212B80D27ACFCB4C8267568A4403A759": {
+			"color": {
+				"red": 240,
+				"green": 240,
+				"blue": 240,
+				"alpha": 0
+			}
+		},
+		"0204D406B91FF24C98C1843A853BF672": {
+			"color": {
+				"red": 240,
+				"green": 240,
+				"blue": 240,
+				"alpha": 0
+			}
+		}
+	}
+}
