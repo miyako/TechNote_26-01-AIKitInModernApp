@@ -124,7 +124,7 @@ Function _generateWithAI($prompt : Text; $docID : Text; $summaryType : Text)
 	
 	$ChatCompletionsParameters:=cs:C1710.AIKit.OpenAIChatCompletionsParameters.new(This:C1470)
 	$ChatCompletionsParameters.model:=This:C1470.config.defaultModel
-	$ChatCompletionsParameters.max_tokens:=This:C1470.SUMMARY_MAX_TOKENS
+	$ChatCompletionsParameters.max_completion_tokens:=This:C1470.SUMMARY_MAX_TOKENS
 	$ChatCompletionsParameters.temperature:=This:C1470.SUMMARY_TEMPERATURE
 	$ChatCompletionsParameters.stream:=This:C1470.stream
 	$ChatCompletionsParameters.formula:=This:C1470.onEventStreamSummary

@@ -113,7 +113,7 @@ Function _callAI($history : Collection)
 	var $ChatCompletionsParameters : cs:C1710.AIKit.OpenAIChatCompletionsParameters
 	$ChatCompletionsParameters:=cs:C1710.AIKit.OpenAIChatCompletionsParameters.new(This:C1470)
 	$ChatCompletionsParameters.model:=This:C1470.config.defaultModel
-	$ChatCompletionsParameters.max_tokens:=This:C1470.MAX_TOKENS
+	$ChatCompletionsParameters.max_completion_tokens:=This:C1470.MAX_TOKENS
 	$ChatCompletionsParameters.temperature:=This:C1470.TEMPERATURE
 	$ChatCompletionsParameters.stream:=This:C1470.stream
 	$ChatCompletionsParameters.formula:=This:C1470.onEventStreamChat
