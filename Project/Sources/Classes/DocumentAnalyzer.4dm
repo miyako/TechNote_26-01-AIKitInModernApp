@@ -148,8 +148,8 @@ Function _analyzeDocumentWithAI($file : 4D:C1709.File; $prompt : Text; $docID : 
 	
 	This:C1470._visionResult:=""
 	
-	$visionHelper:=This:C1470.client.chat.vision.fromFile($file; $ChatCompletionsParameters)
-	$visionHelper.prompt($prompt)
+	$visionHelper:=This:C1470.client.chat.vision.fromFile($file)
+	$visionHelper.prompt($prompt; $ChatCompletionsParameters)
 	
 	
 Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatCompletionsStreamResult)
