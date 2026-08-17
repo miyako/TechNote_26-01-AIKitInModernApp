@@ -89,7 +89,7 @@ If (Count parameters=0)
     CALL WORKER(1; Current method name; True)
 Else
     var $win : Integer
-    $win:=Open form window("MyForm"; Plain form window)
+    $win:=Open form window("MyForm")
     DIALOG("MyForm"; *)
 End if
 ```

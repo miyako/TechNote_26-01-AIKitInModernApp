@@ -6,7 +6,7 @@ Transform a 4D project that uses **synchronous** AI Kit calls (blocking the UI) 
 
 ## Critical Rules for 4D Code
 
-1. **NEVER invent or guess token suffixes** (`:C123`, `:K2:4`). Write command/constant names as plain text (e.g., `DIALOG`, `On Clicked`, `Plain form window`). The IDE adds suffixes automatically. If the original code already has suffixes, preserve them as-is.
+1. **NEVER invent or guess token suffixes** (`:C123`, `:K2:4`). Write command/constant names as plain text (e.g., `DIALOG`, `On Clicked`). The IDE adds suffixes automatically. If the original code already has suffixes, preserve them as-is. **Do NOT pass window type constants** to `Open form window` — omit the second parameter entirely; the default is fine for `DIALOG(*)`.
 2. **Property names must be exact** — check the AI Kit documentation. The correct property is `max_completion_tokens`, NOT `max_tokens`.
 3. **`fromFile()` takes only 1 argument** — `client.chat.vision.fromFile($file)`. Parameters go to `prompt($text; $params)`.
 4. **Never use `WA SET PAGE CONTENT` on a web area loaded via `WA OPEN URL`** — it destroys the page's JS context. Use `WA EXECUTE JAVASCRIPT FUNCTION` instead.
@@ -36,7 +36,7 @@ If (Count parameters=0)
     CALL WORKER(1; Current method name; True)
 Else
     var $win : Integer
-    $win:=Open form window("FormName"; Plain form window)
+    $win:=Open form window("FormName")
     SET WINDOW TITLE("Title"; $win)
     DIALOG("FormName"; *)
 End if
@@ -44,6 +44,7 @@ End if
 
 - `DIALOG("form"; *)` — the `*` makes it non-modal
 - Do NOT add `CLOSE WINDOW`
+- Do NOT pass a window type constant to `Open form window` — the default is fine
 - Process 1 (main worker) is sufficient
 
 ### Step 3: Convert Chat Completions to Async
