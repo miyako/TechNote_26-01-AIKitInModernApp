@@ -141,15 +141,16 @@ Function onEventStreamSummary($chatCompletionsResult : cs:C1710.AIKit.OpenAIChat
 			// Stream complete
 			If ($chatCompletionsResult.choice#Null:C1517)
 				If ($chatCompletionsResult.choice.message=Null:C1517)
-					// Was streaming: reconstruct final message
-					$chatCompletionsResult:=JSON Parse:C1218(JSON Stringify:C1217($chatCompletionsResult))
-					$chatCompletionsResult.choice.message:={role: "assistant"; content: This:C1470._summaryResult}
+					// Was streaming: render final HTML
+					If (Form:C1466#Null:C1517)
+						WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "renderFinal"; *)
+					End if 
 				Else 
-					// Was NOT streaming: display full message
+					// Was NOT streaming: display full message as rendered HTML
 					If ($chatCompletionsResult.choice.message.content#Null:C1517)
 						This:C1470._summaryResult:=This:C1470._summaryResult+$chatCompletionsResult.choice.message.content
 						If (Form:C1466#Null:C1517)
-							WA EXECUTE JAVASCRIPT FUNCTION:C1043(*; "summaryText"; "setContent"; *; This:C1470._summaryResult)
+							WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; This:C1470._summaryResult)
 						End if 
 					End if 
 				End if 
@@ -164,7 +165,7 @@ Function onEventStreamSummary($chatCompletionsResult : cs:C1710.AIKit.OpenAIChat
 			End if 
 			If (Form:C1466#Null:C1517)
 				Form:C1466.generatingSummary:=False:C215
-			End if 
+			End if
 		Else 
 			// Partial result — streaming chunk
 			If ($chatCompletionsResult.choice#Null:C1517)

@@ -24,5 +24,8 @@ Case of
 		Form:C1466.convManager:=Null:C1517
 		Form:C1466.summaryGen:=Null:C1517
 		
+		// Load summary HTML page
+		WA OPEN URL(*; "summaryText"; File("/RESOURCES/summary.html").platformPath)
+		
 		
 End case

@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+body {
+    margin: 0;
+    padding: 20px;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+    font-size: 13px;
+    line-height: 1.6;
+    background: #ffffff;
+    color: #1f2937;
+}
+#streaming {
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+#rendered {
+    display: none;
+}
+h1, h2 { font-size: 15px; font-weight: 600; margin: 12px 0 10px 0; color: #1f2937; }
+h3 { font-size: 14px; font-weight: 600; margin: 16px 0 8px 0; color: #1f2937; }
+p { margin: 8px 0; }
+ul { margin: 8px 0; padding-left: 20px; }
+li { margin: 4px 0; }
+strong { font-weight: 600; color: #111827; }
+hr { border: none; border-top: 1px solid #e5e7eb; margin: 16px 0; }
+</style>
+</head>
+<body>
+<div id="streaming"></div>
+<div id="rendered"></div>
+<script>
+var _raw = '';
+var streamingEl = document.getElementById('streaming');
+var renderedEl = document.getElementById('rendered');
+
+function setContent(text) {
+    _raw = text;
+    streamingEl.style.display = 'block';
+    renderedEl.style.display = 'none';
+    streamingEl.textContent = _raw;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function appendContent(chunk) {
+    _raw += chunk;
+    streamingEl.textContent = _raw;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function renderFinal() {
+    streamingEl.style.display = 'none';
+    renderedEl.style.display = 'block';
+    renderedEl.innerHTML = _raw;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+
+function setRenderedHTML(html) {
+    _raw = html;
+    streamingEl.style.display = 'none';
+    renderedEl.style.display = 'block';
+    renderedEl.innerHTML = html;
+    window.scrollTo(0, document.body.scrollHeight);
+}
+</script>
+</body>
+</html>

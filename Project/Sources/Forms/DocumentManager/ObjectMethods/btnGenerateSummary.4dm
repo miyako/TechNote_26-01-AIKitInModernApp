@@ -21,16 +21,11 @@ Case of
 			$existingSummary:=ds:C1482.Summaries.query("documentID = :1 AND summaryType = :2"; $docID; $summaryType).first()
 			
 			If ($existingSummary#Null:C1517)
-				// Use existing summary
-				var $html : Text
-				$html:=_renderSummaryHTML($existingSummary.summaryText)
-				WA SET PAGE CONTENT:C1037(*; "summaryText"; $html; "")
+					// Use existing summary — render as HTML
+					WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; $existingSummary.summaryText)
 			Else 
-				// Show loading state
-				var $loadingHTML : Text
-				$loadingHTML:="<div style='text-align:center;padding:40px;color:#6b7280'>⏳ Generating "+$summaryType+" summary...</div>"
-				$loadingHTML:=_renderSummaryHTML($loadingHTML)
-				WA SET PAGE CONTENT:C1037(*; "summaryText"; $loadingHTML; "")
+					// Show loading state
+					WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setContent"; *; "⏳ Generating "+$summaryType+" summary...")
 				
 				// Generate summary asynchronously (streaming callback handles display)
 				If (Form:C1466.summaryGen=Null:C1517)
