@@ -217,7 +217,7 @@ The callback handles all UI updates directly — no polling needed.
 
 ### Step 6: Create HTML Files for Web Areas with Streaming
 
-For web areas that display AI-generated HTML (summaries), create a persistent HTML file:
+For web areas that display AI-generated HTML (summaries), create a persistent HTML file with **two divs**: one for streaming (shows raw text) and one for rendered output (shows final HTML). During streaming, show the raw text as-is using `textContent` — this avoids broken partial HTML rendering. When streaming completes, switch to the rendered div and display the final HTML.
 
 **Resources/summary.html:**
 ```html
@@ -242,17 +242,19 @@ var renderedEl = document.getElementById('rendered');
 
 function setContent(text) {
     _raw = text;
-    streamingEl.style.display = 'none';
-    renderedEl.style.display = 'block';
-    renderedEl.innerHTML = _raw;
+    streamingEl.style.display = 'block';
+    renderedEl.style.display = 'none';
+    streamingEl.textContent = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
 function appendContent(chunk) {
     _raw += chunk;
-    renderedEl.innerHTML = _raw;
+    streamingEl.textContent = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
 function renderFinal() {
+    streamingEl.style.display = 'none';
+    renderedEl.style.display = 'block';
     renderedEl.innerHTML = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
@@ -268,12 +270,15 @@ function setRenderedHTML(html) {
 </html>
 ```
 
+**Key design**: 
+- `setContent` / `appendContent` → use `textContent` on the streaming div (shows raw text, avoids broken HTML)
+- `renderFinal` → switches to the rendered div and uses `innerHTML` (renders final HTML)
+- `setRenderedHTML` → for displaying pre-existing cached content as HTML immediately
+
 Load it once in the form's On Load:
 ```4d
 WA OPEN URL(*; "summaryText"; File("/RESOURCES/summary.html").platformPath)
 ```
-
-Use `innerHTML` during streaming (browsers auto-close unclosed HTML tags).
 
 ### Step 7: Add JS Functions to Chat Web Area
 
@@ -316,14 +321,21 @@ function addUserMessage(content) {
 
 ### Step 9: Handle Text Area Streaming (extractedDataArea)
 
-For plain text form objects, update the variable and scroll:
+For plain text form objects (not web areas), update the variable with accumulated text and use `HIGHLIGHT TEXT` to **position the cursor at the end** (which auto-scrolls):
+
 ```4d
-Form.extractedDataArea:=This._visionResult
-var $start; $end : Integer
-$start:=Length(Form.extractedDataArea)+1
-$end:=$start
-HIGHLIGHT TEXT(*; "extractedDataArea"; $start; $end)
+// In the vision streaming callback (non-terminated events):
+This._visionResult:=This._visionResult+$chatCompletionsResult.choice.delta.text
+If (Form#Null)
+    Form.extractedDataArea:=This._visionResult
+    var $start; $end : Integer
+    $start:=Length(Form.extractedDataArea)+1
+    $end:=$start
+    HIGHLIGHT TEXT(*; "extractedDataArea"; $start; $end)
+End if
 ```
+
+**CRITICAL**: `$start` must be `Length(...)+1` and `$end:=$start`. This places the cursor AFTER the last character, causing the text area to scroll to the bottom. Do NOT use `$start:=1; $end:=Length(...)` — that SELECTS all text instead of scrolling.
 
 ## Checklist After Conversion
 

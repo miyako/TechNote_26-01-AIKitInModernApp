@@ -111,11 +111,17 @@ The `*` before the text argument means "no return value expected."
 
 ### 8. Streaming HTML Content
 
-When the AI returns HTML (e.g., summaries), displaying partial HTML with `textContent` shows raw tags. Instead:
+When the AI returns HTML (e.g., summaries), use a **two-div approach**:
 
-- Use `innerHTML` during streaming — browsers auto-close unclosed tags
-- Create a persistent HTML file loaded via `WA OPEN URL` with JS functions
-- Functions: `setContent(text)`, `appendContent(chunk)`, `renderFinal()`, `setRenderedHTML(html)`
+- **Streaming div** (`textContent`): Shows raw text as it arrives — no broken HTML rendering
+- **Rendered div** (`innerHTML`): Shows the final HTML after streaming completes
+
+Create a persistent HTML file loaded via `WA OPEN URL` with JS functions:
+- `setContent(text)` / `appendContent(chunk)` — update streaming div with `textContent`
+- `renderFinal()` — hide streaming div, show rendered div with `innerHTML`
+- `setRenderedHTML(html)` — for cached content, render immediately
+
+**Do NOT use `innerHTML` during streaming** — partial HTML tags cause broken rendering (styles appearing/disappearing, elements jumping).
 
 ### 9. Streaming Plain Text (e.g., extractedDataArea)
 
