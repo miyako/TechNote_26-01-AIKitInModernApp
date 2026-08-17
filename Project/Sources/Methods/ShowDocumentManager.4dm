@@ -6,8 +6,11 @@
 //
 // ----------------------------------------------------
 
-var $win : Integer
-$win:=Open form window:C675("DocumentManager")
-SET WINDOW TITLE:C213("Document Manager"; $win)
-DIALOG:C40("DocumentManager")
-CLOSE WINDOW:C154($win)
+If (Count parameters:C259=0)
+	CALL WORKER:C1389(1; Current method name:C684; True:C214)
+Else 
+	var $win : Integer
+	$win:=Open form window:C675("DocumentManager"; Plain form window:K31:1)
+	SET WINDOW TITLE:C213("Document Manager"; $win)
+	DIALOG:C40("DocumentManager"; *)
+End if

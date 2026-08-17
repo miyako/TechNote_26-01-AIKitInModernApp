@@ -11,9 +11,8 @@
 #DECLARE($docID : Text)
 
 var $analyzer : cs:C1710.DocumentAnalyzer
-var $success : Boolean
 
 If ($docID#"")
 	$analyzer:=cs:C1710.DocumentAnalyzer.new()
-	$success:=$analyzer.analyzeDocument($docID)
-End if 
+	$analyzer.analyzeDocument($docID)
+End if

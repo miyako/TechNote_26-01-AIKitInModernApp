@@ -41,6 +41,10 @@ $html:=$html+"<meta name='viewport' content='width=device-width, initial-scale=1
 $html:=$html+"<style>"+$styles+"</style>"
 $html:=$html+"</head><body>"
 $html:=$html+$content
+$html:=$html+"<script>"
+$html:=$html+"function setContent(html) { document.body.innerHTML = html; window.scrollTo(0, document.body.scrollHeight); }"
+$html:=$html+"function appendContent(chunk) { document.body.innerHTML += chunk; window.scrollTo(0, document.body.scrollHeight); }"
+$html:=$html+"</script>"
 $html:=$html+"</body></html>"
 
 return $html

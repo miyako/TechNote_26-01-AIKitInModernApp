@@ -26,25 +26,21 @@ Case of
 				$html:=_renderSummaryHTML($existingSummary.summaryText)
 				WA SET PAGE CONTENT:C1037(*; "summaryText"; $html; "")
 			Else 
-				// Generate new summary asynchronously
+				// Show loading state
 				var $loadingHTML : Text
 				$loadingHTML:="<div style='text-align:center;padding:40px;color:#6b7280'>⏳ Generating "+$summaryType+" summary...</div>"
 				$loadingHTML:=_renderSummaryHTML($loadingHTML)
 				WA SET PAGE CONTENT:C1037(*; "summaryText"; $loadingHTML; "")
 				
-				// Call worker to generate summary
-				CALL WORKER:C1389("SummaryWorker-"+$docID; "_asyncGenerateSummary"; $docID; $summaryType)
-				//GenerateSummaryAsync($docID; $summaryType)
-				
-				
-				// Start timer to poll for completion - store doc ID and type
+				// Generate summary asynchronously (streaming callback handles display)
+				If (Form:C1466.summaryGen=Null:C1517)
+					Form:C1466.summaryGen:=cs:C1710.SummaryGenerator.new()
+				End if 
 				Form:C1466.generatingSummary:=True:C214
-				Form:C1466.generatingSummaryDoc:=$docID
-				Form:C1466.generatingSummaryType:=$summaryType
-				SET TIMER:C645(120)  // 2 seconds
+				Form:C1466.summaryGen.generateSummary($docID; $summaryType)
 			End if 
 		Else 
 			ALERT:C41("Please select a processed document first")
 		End if 
 		
-End case 
+End case

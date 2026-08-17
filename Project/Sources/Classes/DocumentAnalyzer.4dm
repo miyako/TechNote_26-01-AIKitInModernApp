@@ -10,6 +10,8 @@ property client : cs:C1710.AIKit.OpenAI
 property PDF_DPI : Integer
 property MAX_TOKENS : Integer
 property TEMPERATURE : Real
+property stream : Boolean
+property _visionResult : Text
 
 
 Class constructor
@@ -20,11 +22,11 @@ Class constructor
 	This:C1470.PDF_DPI:=144
 	This:C1470.MAX_TOKENS:=1000
 	This:C1470.TEMPERATURE:=0.1
+	This:C1470.stream:=True:C214
+	This:C1470._visionResult:=""
 	
-Function analyzeDocument($docID : Text)->$success : Boolean
+Function analyzeDocument($docID : Text)
 	var $doc : cs:C1710.DocumentEntity
-	
-	$success:=False:C215
 	
 	$doc:=ds:C1482.Document.get($docID)
 	
@@ -34,22 +36,9 @@ Function analyzeDocument($docID : Text)->$success : Boolean
 		$doc.statusMessage:="🔄 Analyzing document and extracting data..."
 		$doc.save()
 		
-		// Extract data using AI
-		$success:=This:C1470._extractGenericData($doc)
-		
-		// Reload document to avoid stamp conflicts
-		$doc:=ds:C1482.Document.get($docID)
-		
-		If ($success)
-			$doc.status:="Processed"
-			$doc.statusMessage:="✅ Analysis complete"
-		Else 
-			$doc.status:="Error"
-			$doc.statusMessage:=$result.errors[0].body.error.message
-		End if 
-		
-		var $result:=$doc.save()
-	End if 
+		// Extract data using AI (async — callback handles status update)
+		This:C1470._extractGenericData($doc)
+	End if
 	
 Function _convertPdfToImage($pdfFile : 4D:C1709.File)->$imageFile : 4D:C1709.File
 	// Convert PDF to PNG using the pdfium plugin
@@ -96,14 +85,9 @@ Function _convertPdfToImage($pdfFile : 4D:C1709.File)->$imageFile : 4D:C1709.Fil
 		$imageFile:=$pdfFile
 	End try
 	
-Function _extractGenericData($doc : cs:C1710.DocumentEntity)->$sucess : Boolean
+Function _extractGenericData($doc : cs:C1710.DocumentEntity)
 	var $file : 4D:C1709.File
 	var $prompt : Text
-	var $result : Object
-	var $extracted : Object
-	var $error : Object
-	
-	var $success:=False:C215
 	
 	// Prepare document file
 	$file:=This:C1470._prepareDocumentFile($doc)
@@ -112,21 +96,9 @@ Function _extractGenericData($doc : cs:C1710.DocumentEntity)->$sucess : Boolean
 		// Build extraction prompt
 		$prompt:=This:C1470._buildExtractionPrompt()
 		
-		// Call AI vision API
-		$result:=This:C1470._analyzeDocumentWithAI($file; $prompt)
-		
-		If ($result.success)
-			$extracted:=JSON Parse:C1218($result.choice.message.content)
-			
-		Else 
-			$error:=New object:C1471("errorType"; $result.errors[0].code; "errorMessage"; $result.errors[0].body.error.message)
-			$extracted:=$error
-		End if 
-	End if 
-	If ($extracted#Null:C1517)
-		$success:=This:C1470._saveExtractedData($doc.UUID; $extracted)
-	End if 
-	return $success
+		// Call AI vision API (async — callback handles saving)
+		This:C1470._analyzeDocumentWithAI($file; $prompt; $doc.UUID)
+	End if
 	
 	
 	// MARK: - Private Functions
@@ -162,19 +134,80 @@ Function _buildExtractionPrompt()->$prompt : Text
 	return $prompt
 	
 	
-Function _analyzeDocumentWithAI($file : 4D:C1709.File; $prompt : Text)->$result : Object
+Function _analyzeDocumentWithAI($file : 4D:C1709.File; $prompt : Text; $docID : Text)
 	var $visionHelper : Object
-	var $params : Object
+	var $ChatCompletionsParameters : cs:C1710.AIKit.OpenAIChatCompletionsParameters
 	
-	$visionHelper:=This:C1470.client.chat.vision.fromFile($file)
-	$params:=New object:C1471(\
-		"model"; This:C1470.config.visionModel; \
-		"max_tokens"; This:C1470.MAX_TOKENS; \
-		"temperature"; This:C1470.TEMPERATURE)
+	$ChatCompletionsParameters:=cs:C1710.AIKit.OpenAIChatCompletionsParameters.new(This:C1470)
+	$ChatCompletionsParameters.model:=This:C1470.config.visionModel
+	$ChatCompletionsParameters.max_tokens:=This:C1470.MAX_TOKENS
+	$ChatCompletionsParameters.temperature:=This:C1470.TEMPERATURE
+	$ChatCompletionsParameters.stream:=This:C1470.stream
+	$ChatCompletionsParameters.formula:=This:C1470.onEventStreamVision
+	$ChatCompletionsParameters.extraHeaders:={docID: $docID}
 	
-	$result:=$visionHelper.prompt($prompt; $params)
+	This:C1470._visionResult:=""
 	
-	return $result
+	$visionHelper:=This:C1470.client.chat.vision.fromFile($file; $ChatCompletionsParameters)
+	$visionHelper.prompt($prompt)
+	
+	
+Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatCompletionsStreamResult)
+	If ($chatCompletionsResult.success)
+		If ($chatCompletionsResult.terminated)
+			// Stream complete
+			var $content : Text
+			If ($chatCompletionsResult.choice#Null:C1517)
+				If ($chatCompletionsResult.choice.message=Null:C1517)
+					$content:=This:C1470._visionResult
+				Else 
+					If ($chatCompletionsResult.choice.message.content#Null:C1517)
+						$content:=$chatCompletionsResult.choice.message.content
+					End if 
+				End if 
+			End if 
+			// Save extracted data
+			var $docID : Text
+			$docID:=$chatCompletionsResult.request.headers.docID
+			If ($docID#"") & ($content#"")
+				var $extracted : Object
+				$extracted:=JSON Parse:C1218($content)
+				If ($extracted#Null:C1517)
+					This:C1470._saveExtractedData($docID; $extracted)
+					// Update document status
+					var $doc : cs:C1710.DocumentEntity
+					$doc:=ds:C1482.Document.get($docID)
+					If ($doc#Null:C1517)
+						$doc.status:="Processed"
+						$doc.statusMessage:="✅ Analysis complete"
+						$doc.save()
+					End if 
+				End if 
+			End if 
+		Else 
+			// Partial result — accumulate
+			If ($chatCompletionsResult.choice#Null:C1517)
+				If ($chatCompletionsResult.choice.delta.text#"")
+					This:C1470._visionResult:=This:C1470._visionResult+$chatCompletionsResult.choice.delta.text
+				End if 
+			End if 
+		End if 
+	Else 
+		If ($chatCompletionsResult.terminated)
+			// Error
+			var $errDocID : Text
+			$errDocID:=$chatCompletionsResult.request.headers.docID
+			If ($errDocID#"")
+				var $errDoc : cs:C1710.DocumentEntity
+				$errDoc:=ds:C1482.Document.get($errDocID)
+				If ($errDoc#Null:C1517)
+					$errDoc.status:="Error"
+					$errDoc.statusMessage:=$chatCompletionsResult.errors.extract("message").join("\r")
+					$errDoc.save()
+				End if 
+			End if 
+		End if 
+	End if
 	
 	
 Function _saveExtractedData($documentID : Text; $extracted : Object)->$success : Boolean
