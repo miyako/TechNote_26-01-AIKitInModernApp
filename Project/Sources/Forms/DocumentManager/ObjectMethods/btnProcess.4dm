@@ -29,11 +29,10 @@ Case of
 			Form:C1466.selectedDoc.statusMessage:="🔄 Preparing document for analysis..."
 			Form:C1466.selectedDoc.save()
 			Form:C1466.documents:=Form:C1466.documents
+			Form:C1466.extractedDataArea:=""
 			
 			// Process document asynchronously (callback handles completion)
 			_asyncProcessDocument($docID)
-			
-			Form:C1466.extractedDataArea:=""
 			
 		Else 
 			ALERT:C41("Please select a document first.")
