@@ -30,15 +30,10 @@ Case of
 			Form:C1466.selectedDoc.save()
 			Form:C1466.documents:=Form:C1466.documents
 			
-			// Process document asynchronously in worker
-			CALL WORKER:C1389("DocumentWorker-"+$docID; "_asyncProcessDocument"; $docID)
+			// Process document asynchronously (callback handles completion)
+			_asyncProcessDocument($docID)
 			
-			
-			// Start timer to poll for completion (every 2 seconds)
-			Form:C1466.processingDocID:=$docID
-			SET TIMER:C645(120)  // 120 ticks = 2 seconds
-			
-			Form:C1466.extractedDataArea:="🔄 Processing document asynchronously...\n\nPlease wait while the AI analyzes your document."
+			Form:C1466.extractedDataArea:=""
 			
 		Else 
 			ALERT:C41("Please select a document first.")

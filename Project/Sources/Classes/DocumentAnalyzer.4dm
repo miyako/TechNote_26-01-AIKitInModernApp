@@ -38,7 +38,7 @@ Function analyzeDocument($docID : Text)
 		
 		// Extract data using AI (async — callback handles status update)
 		This:C1470._extractGenericData($doc)
-	End if
+	End if 
 	
 Function _convertPdfToImage($pdfFile : 4D:C1709.File)->$imageFile : 4D:C1709.File
 	// Convert PDF to PNG using the pdfium plugin
@@ -98,7 +98,7 @@ Function _extractGenericData($doc : cs:C1710.DocumentEntity)
 		
 		// Call AI vision API (async — callback handles saving)
 		This:C1470._analyzeDocumentWithAI($file; $prompt; $doc.UUID)
-	End if
+	End if 
 	
 	
 	// MARK: - Private Functions
@@ -182,6 +182,24 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 						$doc.statusMessage:="✅ Analysis complete"
 						$doc.save()
 					End if 
+					// Update form UI
+					If (Form:C1466#Null:C1517)
+						Form:C1466.selectedDoc:=$doc
+						Form:C1466.documents:=ds:C1482.Document.all().orderBy("uploadDate desc")
+						var $extData : cs:C1710.ExtractedDataEntity
+						$extData:=ds:C1482.ExtractedData.query("documentID = :1"; $docID).first()
+						If ($extData#Null:C1517)
+							Form:C1466.extractedDataArea:=_displayExtractedData($extData)
+							// Auto-generate Brief summary
+							If (Form:C1466.summaryGen=Null:C1517)
+								Form:C1466.summaryGen:=cs:C1710.SummaryGenerator.new()
+							End if 
+							Form:C1466.generatingSummary:=True
+							Form:C1466.summaryGen.generateSummary($docID; "Brief")
+						Else 
+							Form:C1466.extractedDataArea:="❌ No extracted data found"
+						End if 
+					End if 
 				End if 
 			End if 
 		Else 
@@ -189,6 +207,12 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 			If ($chatCompletionsResult.choice#Null:C1517)
 				If ($chatCompletionsResult.choice.delta.text#"")
 					This:C1470._visionResult:=This:C1470._visionResult+$chatCompletionsResult.choice.delta.text
+					If (Form:C1466#Null:C1517)
+						Form:C1466.extractedDataArea:=This:C1470._visionResult
+						$start:=Length:C16(Form:C1466.extractedDataArea)+1
+						$end:=$start
+						//HIGHLIGHT TEXT(*; "{object name for Form.extractedDataArea}"; $start; $end)
+					End if 
 				End if 
 			End if 
 		End if 
@@ -204,10 +228,13 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 					$errDoc.status:="Error"
 					$errDoc.statusMessage:=$chatCompletionsResult.errors.extract("message").join("\r")
 					$errDoc.save()
+					If (Form:C1466#Null:C1517)
+						Form:C1466.extractedDataArea:="❌ ERROR\n\n"+$errDoc.statusMessage
+					End if
 				End if 
 			End if 
 		End if 
-	End if
+	End if 
 	
 	
 Function _saveExtractedData($documentID : Text; $extracted : Object)->$success : Boolean
