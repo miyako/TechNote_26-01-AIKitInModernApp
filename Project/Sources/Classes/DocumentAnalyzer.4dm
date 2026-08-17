@@ -194,7 +194,7 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 							If (Form:C1466.summaryGen=Null:C1517)
 								Form:C1466.summaryGen:=cs:C1710.SummaryGenerator.new()
 							End if 
-							Form:C1466.generatingSummary:=True
+							Form:C1466.generatingSummary:=True:C214
 							Form:C1466.summaryGen.generateSummary($docID; "Brief")
 						Else 
 							Form:C1466.extractedDataArea:="❌ No extracted data found"
@@ -209,9 +209,10 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 					This:C1470._visionResult:=This:C1470._visionResult+$chatCompletionsResult.choice.delta.text
 					If (Form:C1466#Null:C1517)
 						Form:C1466.extractedDataArea:=This:C1470._visionResult
+						var $start; $end : Integer
 						$start:=Length:C16(Form:C1466.extractedDataArea)+1
 						$end:=$start
-						//HIGHLIGHT TEXT(*; "{object name for Form.extractedDataArea}"; $start; $end)
+						HIGHLIGHT TEXT(*; "extractedDataArea"; $start; $end)
 					End if 
 				End if 
 			End if 
@@ -230,7 +231,7 @@ Function onEventStreamVision($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatC
 					$errDoc.save()
 					If (Form:C1466#Null:C1517)
 						Form:C1466.extractedDataArea:="❌ ERROR\n\n"+$errDoc.statusMessage
-					End if
+					End if 
 				End if 
 			End if 
 		End if 
