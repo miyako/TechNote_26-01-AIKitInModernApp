@@ -356,18 +356,18 @@ End if
 ## Architecture Diagram
 
 ```
-┌─────────────┐     ┌──────────────────────────┐     ┌─────────────┐
-│  Button     │────▶│  Class Method            │────▶│  AI Kit API │
-│  (On Click) │     │  (creates params,        │     │  (HTTP)     │
+┌─────────────┐     ┌───────────────────────────┐     ┌─────────────┐
+│  Button     │────▶│  Class Method             │────▶│  AI Kit API │
+│  (On Click) │     │  (creates params,         │     │  (HTTP)     │
 │             │     │   calls .create/.prompt)  │     │             │
-└─────────────┘     └──────────────────────────┘     └──────┬──────┘
-                                                            │
-                    ┌──────────────────────────┐            │ callbacks
-                    │  Callback Function       │◀───────────┘
+└─────────────┘     └───────────────────────────┘     └──────┬──────┘
+                                                             │
+                    ┌───────────────────────────┐            │ callbacks
+                    │  Callback Function        │◀───────────┘
                     │  (onEventStream...)       │
                     │  - updates web area via   │
                     │    WA EXECUTE JS FUNCTION │
                     │  - saves to DB on done    │
                     │  - updates Form state     │
-                    └──────────────────────────┘
+                    └───────────────────────────┘
 ```
