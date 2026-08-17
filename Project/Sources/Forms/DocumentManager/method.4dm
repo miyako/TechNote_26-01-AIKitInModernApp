@@ -25,7 +25,8 @@ Case of
 		Form:C1466.summaryGen:=Null:C1517
 		
 		// Load summary HTML page
-		WA OPEN URL(*; "summaryText"; File("/RESOURCES/summary.html").platformPath)
+		WA OPEN URL:C1020(*; "summaryText"; File:C1566("/RESOURCES/summary.html").platformPath)
+		WA SET PREFERENCE:C1041(*; "summaryText"; WA enable contextual menu:K62:6; True:C214)
+		WA SET PREFERENCE:C1041(*; "summaryText"; WA enable Web inspector:K62:7; True:C214)
 		
-		
-End case
+End case 

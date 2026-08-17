@@ -43,21 +43,19 @@ var renderedEl = document.getElementById('rendered');
 
 function setContent(text) {
     _raw = text;
-    streamingEl.style.display = 'block';
-    renderedEl.style.display = 'none';
-    streamingEl.textContent = _raw;
+    streamingEl.style.display = 'none';
+    renderedEl.style.display = 'block';
+    renderedEl.innerHTML = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
 
 function appendContent(chunk) {
     _raw += chunk;
-    streamingEl.textContent = _raw;
+    renderedEl.innerHTML = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
 
 function renderFinal() {
-    streamingEl.style.display = 'none';
-    renderedEl.style.display = 'block';
     renderedEl.innerHTML = _raw;
     window.scrollTo(0, document.body.scrollHeight);
 }
