@@ -48,25 +48,18 @@ Case of
 			$summary:=ds:C1482.Summaries.query("documentID = :1 AND summaryType = :2"; Form:C1466.selectedDoc.UUID; "Brief").first()
 			
 			If ($summary#Null:C1517)
-				// Display in web area
-				var $html : Text
-				$html:=_renderSummaryHTML($summary.summaryText)
-				WA SET PAGE CONTENT:C1037(*; "summaryText"; $html; "")
-			Else 
-				// Check if summary is currently being generated for this document
-				If ((Form:C1466.generatingSummary) & (Form:C1466.generatingSummaryDoc=Form:C1466.selectedDoc.UUID))
-					// Show generating state with specific summary type
-					var $loadingHTML : Text
-					$loadingHTML:="<div style='text-align:center;padding:40px;color:#6b7280'>⏳ Generating "+Form:C1466.generatingSummaryType+" summary...</div>"
-					$loadingHTML:=_renderSummaryHTML($loadingHTML)
-					WA SET PAGE CONTENT:C1037(*; "summaryText"; $loadingHTML; "")
+					// Display in web area
+					WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; $summary.summaryText)
 				Else 
-					// Clear web area if no summary
-					var $emptyHTML : Text
-					$emptyHTML:=_renderSummaryHTML("<div style='color:#6b7280;text-align:center;padding:40px'>No summary available. Click Generate to create one.</div>")
-					WA SET PAGE CONTENT:C1037(*; "summaryText"; $emptyHTML; "")
-				End if 
-			End if 
+					// Check if summary is currently being generated for this document
+					If ((Form:C1466.generatingSummary) & (Form:C1466.generatingSummaryDoc=Form:C1466.selectedDoc.UUID))
+						// Show generating state with specific summary type
+						WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; "<div style='text-align:center;padding:40px;color:#6b7280'>⏳ Generating "+Form:C1466.generatingSummaryType+" summary...</div>")
+					Else 
+						// Clear web area if no summary
+						WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; "<div style='color:#6b7280;text-align:center;padding:40px'>No summary available. Click Generate to create one.</div>")
+					End if 
+				End if
 			
 			// Load existing conversation history
 			var $conv : cs:C1710.ConversationEntity

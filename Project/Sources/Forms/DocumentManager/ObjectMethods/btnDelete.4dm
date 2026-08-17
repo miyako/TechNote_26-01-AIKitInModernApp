@@ -37,9 +37,7 @@ Case of
 				Form:C1466.extractedDataArea:=""
 				
 				// Clear summary web area
-				var $emptyHTML : Text
-				$emptyHTML:=_renderSummaryHTML("<div style='text-align:center;padding:40px;color:#9ca3af'>No document selected</div>")
-				WA SET PAGE CONTENT:C1037(*; "summaryText"; $emptyHTML; "")
+					WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; "<div style='text-align:center;padding:40px;color:#9ca3af'>No document selected</div>")
 				
 				// Clear chat web area
 				Form:C1466.chatMessages:=New collection:C1472()

@@ -8,6 +8,8 @@ property config : cs:C1710.AIConfig
 property client : cs:C1710.AIKit.OpenAI
 property SUMMARY_MAX_TOKENS : Integer
 property SUMMARY_TEMPERATURE : Real
+property stream : Boolean
+property _summaryResult : Text
 
 Class constructor
 	This:C1470.config:=cs:C1710.AIConfig.me
@@ -16,14 +18,13 @@ Class constructor
 	// Constants
 	This:C1470.SUMMARY_MAX_TOKENS:=800
 	This:C1470.SUMMARY_TEMPERATURE:=0.3
+	This:C1470.stream:=True:C214
+	This:C1470._summaryResult:=""
 	
-Function generateSummary($docID : Text; $summaryType : Text)->$summaryID : Text
+Function generateSummary($docID : Text; $summaryType : Text)
 	var $doc : cs:C1710.DocumentEntity
 	var $extData : cs:C1710.ExtractedDataEntity
 	var $prompt : Text
-	var $result : Object
-	
-	$summaryID:=""
 	
 	// Load data
 	$doc:=ds:C1482.Document.get($docID)
@@ -35,14 +36,7 @@ Function generateSummary($docID : Text; $summaryType : Text)->$summaryID : Text
 	End if 
 	
 	$prompt:=This:C1470._buildSummaryPrompt($summaryType; $extData)
-	$result:=This:C1470._generateWithAI($prompt)
-	
-	
-	If ($result.success)
-		$summaryID:=This:C1470._saveSummary($docID; $summaryType; $result.choice.message.content; $result.model)
-	End if 
-	
-	return $summaryID
+	This:C1470._generateWithAI($prompt; $docID; $summaryType)
 	
 	
 	
@@ -120,26 +114,83 @@ Function _buildSummaryPrompt($summaryType : Text; $extData : cs:C1710.ExtractedD
 	return $prompt
 	
 	
-Function _generateWithAI($prompt : Text)->$result : Object
+Function _generateWithAI($prompt : Text; $docID : Text; $summaryType : Text)
 	var $messages : Collection
-	var $params : Object
+	var $ChatCompletionsParameters : cs:C1710.AIKit.OpenAIChatCompletionsParameters
 	
 	$messages:=New collection:C1472
 	$messages.push(New object:C1471("role"; "system"; "content"; "You are a business document analyst."))
 	$messages.push(New object:C1471("role"; "user"; "content"; $prompt))
 	
-	$params:={\
-		model: This:C1470.config.defaultModel; \
-		max_tokens: This:C1470.SUMMARY_MAX_TOKENS; \
-		temperature: This:C1470.SUMMARY_TEMPERATURE}
+	$ChatCompletionsParameters:=cs:C1710.AIKit.OpenAIChatCompletionsParameters.new(This:C1470)
+	$ChatCompletionsParameters.model:=This:C1470.config.defaultModel
+	$ChatCompletionsParameters.max_completion_tokens:=This:C1470.SUMMARY_MAX_TOKENS
+	$ChatCompletionsParameters.temperature:=This:C1470.SUMMARY_TEMPERATURE
+	$ChatCompletionsParameters.stream:=This:C1470.stream
+	$ChatCompletionsParameters.formula:=This:C1470.onEventStreamSummary
+	$ChatCompletionsParameters.extraHeaders:={docID: $docID; summaryType: $summaryType}
 	
-	//use asynchronous call
-	//onResponse: Formula(testAsync($1))
-	//$result:=This.client.chat.completions.create($messages; $params)
-	$result:=This:C1470.client.chat.completions.create($messages; $params)
+	This:C1470._summaryResult:=""
+	
+	This:C1470.client.chat.completions.create($messages; $ChatCompletionsParameters)
 	
 	
-	return $result
+Function onEventStreamSummary($chatCompletionsResult : cs:C1710.AIKit.OpenAIChatCompletionsStreamResult)
+	If ($chatCompletionsResult.success)
+		If ($chatCompletionsResult.terminated)
+			// Stream complete
+			If ($chatCompletionsResult.choice#Null:C1517)
+				If ($chatCompletionsResult.choice.message#Null:C1517)
+					// Was NOT streaming: use full message
+					If ($chatCompletionsResult.choice.message.content#Null:C1517)
+						This:C1470._summaryResult:=This:C1470._summaryResult+$chatCompletionsResult.choice.message.content
+					End if 
+				End if 
+			End if 
+			// Render the final HTML
+			If (Form:C1466#Null:C1517)
+				WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "renderFinal"; *)
+			End if 
+			// Save summary to database
+			var $docID : Text
+			var $summaryType : Text
+			$docID:=$chatCompletionsResult.request.headers.docID
+			$summaryType:=$chatCompletionsResult.request.headers.summaryType
+			If ($docID#"") & ($summaryType#"")
+				This:C1470._saveSummary($docID; $summaryType; This:C1470._summaryResult; "")
+			End if 
+			If (Form:C1466#Null:C1517)
+				Form:C1466.generatingSummary:=False:C215
+			End if
+		Else 
+			// Partial result — streaming chunk
+			If ($chatCompletionsResult.choice#Null:C1517)
+				If ($chatCompletionsResult.choice.delta.text#"")
+					If (This:C1470._summaryResult="")
+						If (Form:C1466#Null:C1517)
+							// First chunk: set content
+							WA EXECUTE JAVASCRIPT FUNCTION:C1043(*; "summaryText"; "setContent"; *; $chatCompletionsResult.choice.delta.text)
+						End if 
+					Else 
+						If (Form:C1466#Null:C1517)
+							// Subsequent chunks: append
+							WA EXECUTE JAVASCRIPT FUNCTION:C1043(*; "summaryText"; "appendContent"; *; $chatCompletionsResult.choice.delta.text)
+						End if 
+					End if 
+					This:C1470._summaryResult:=This:C1470._summaryResult+$chatCompletionsResult.choice.delta.text
+				End if 
+			End if 
+		End if 
+	Else 
+		If ($chatCompletionsResult.terminated)
+			// Error occurred
+			This:C1470._summaryResult:=$chatCompletionsResult.errors.extract("message").join("\r")
+			If (Form:C1466#Null:C1517)
+				WA EXECUTE JAVASCRIPT FUNCTION:C1043(*; "summaryText"; "setContent"; *; "❌ Error: "+This:C1470._summaryResult)
+				Form:C1466.generatingSummary:=False:C215
+			End if 
+		End if 
+	End if
 	
 	
 Function _saveSummary($docID : Text; $summaryType : Text; $summaryText : Text; $model : Text)->$summaryID : Text
