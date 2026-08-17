@@ -140,20 +140,16 @@ Function onEventStreamSummary($chatCompletionsResult : cs:C1710.AIKit.OpenAIChat
 		If ($chatCompletionsResult.terminated)
 			// Stream complete
 			If ($chatCompletionsResult.choice#Null:C1517)
-				If ($chatCompletionsResult.choice.message=Null:C1517)
-					// Was streaming: render final HTML
-					If (Form:C1466#Null:C1517)
-						WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "renderFinal"; *)
-					End if 
-				Else 
-					// Was NOT streaming: display full message as rendered HTML
+				If ($chatCompletionsResult.choice.message#Null:C1517)
+					// Was NOT streaming: use full message
 					If ($chatCompletionsResult.choice.message.content#Null:C1517)
 						This:C1470._summaryResult:=This:C1470._summaryResult+$chatCompletionsResult.choice.message.content
-						If (Form:C1466#Null:C1517)
-							WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "setRenderedHTML"; *; This:C1470._summaryResult)
-						End if 
 					End if 
 				End if 
+			End if 
+			// Render the final HTML
+			If (Form:C1466#Null:C1517)
+				WA EXECUTE JAVASCRIPT FUNCTION(*; "summaryText"; "renderFinal"; *)
 			End if 
 			// Save summary to database
 			var $docID : Text
